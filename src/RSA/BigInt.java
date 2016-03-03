@@ -7,6 +7,10 @@
     RSA
 */
 
+package RSA;
+
+import java.util.Vector;
+
 /**
  * Store and operate on arbitrarily large unsigned integers
  */
@@ -17,7 +21,7 @@ public class BigInt
      * digit to the most-significant digit
      * e.g. 25143 -> [3, 4, 1, 5, 2]
      */
-    private final byte[] number;
+    private final Vector<Byte> number;
     
     /**
      * Constructs object initialized to zero
@@ -36,7 +40,12 @@ public class BigInt
         //@@ Implement this
         assert(value >= 0);
         
-        number = new byte[0];
+        number = new Vector<Byte>();
+        
+        do
+        {
+            number.add((byte)(value % 10));
+        } while(value >= 0);
     }
     
     /**
@@ -47,7 +56,7 @@ public class BigInt
     public BigInt(String value)
     {
         //@@ Implement this
-        number = new byte[0];
+        number = new Vector<Byte>();
     }
     
     /**
@@ -57,7 +66,7 @@ public class BigInt
      */
     public BigInt(BigInt value)
     {
-        this.number = value.number.clone();
+        this.number = (Vector<Byte>) value.number.clone();
     }
     
     /**
@@ -81,8 +90,12 @@ public class BigInt
      * @return      new BigInt with the result of a - b
      */
     public static BigInt sub(BigInt a, BigInt b)
+    throws ArithmeticException
     {
         //@@ Implement this
+        
+        if(greater(a, b)) throw new ArithmeticException("BigInt.sub(a,b): a is greater than b"); 
+       
         return null;
     }
     
@@ -122,6 +135,7 @@ public class BigInt
     public static BigInt mod(BigInt a, BigInt b)
     {
         //@@ Implement this
+        // https://en.wikipedia.org/wiki/Montgomery_modular_multiplication
         return null;
     }
     
@@ -135,6 +149,39 @@ public class BigInt
     public static BigInt pow(BigInt a, BigInt b)
     {
         //@@ Implement this
+        // c = a+b -> n^c == n^(a+b) == n^a*n^b
+        return null;
+    }
+    
+    /**
+     * Implements an efficient algorithm for computing b^e%m
+     * 
+     * @param b     Base
+     * @param e     Exponent
+     * @param m     Modulus
+     * @return      new BigInt with the result of b^e%m
+     */
+    public static BigInt powMod(BigInt b, BigInt e, BigInt m)
+    {
+        //@@ Implement this
+        
+        /**
+         * c = 1;
+         * for(int i = 0; i < e; i++)
+         *     c = (c*m)%n;
+         */
+        return null;
+    }
+    
+    /**
+     * Computes the greatest common divisor of a and b
+     * 
+     * @param a     value 1
+     * @param b     value 2
+     * @return      new BigInt with the greatest common divisor of a and b
+     */
+    public static BigInt gcd(BigInt a, BigInt b)
+    {
         return null;
     }
     
@@ -148,15 +195,15 @@ public class BigInt
     public static boolean equals(BigInt a, BigInt b)
     {
         // Check if a and b contain same number of digits
-        if(a.number.length != b.number.length)
+        if(a.number.size() != b.number.size())
         {
             return false;
         }
         
         // Check that all digits in a and b are equal
-        for(int i = 0; i < a.number.length; ++i)
+        for(int i = 0; i < a.number.size(); ++i)
         {
-            if(a.number[i] != b.number[i])
+            if(a.number.get(i).compareTo(b.number.get(i)) != 0)
             {
                 return false;
             }
@@ -175,19 +222,19 @@ public class BigInt
     public static boolean less(BigInt a, BigInt b)
     {
         // Check if a and b contain differing number of digits
-        if(a.number.length != b.number.length)
+        if(a.number.size() != b.number.size())
         {
-            return a.number.length < b.number.length;
+            return a.number.size() < b.number.size();
         }
         
         // Starting from most-significant digit, check each digit for a < b
-        for(int i = a.number.length; i >= 0; --i)
+        for(int i = a.number.size(); i >= 0; --i)
         {
-            if(a.number[i] < b.number[i])
+            if(a.number.get(i).compareTo(b.number.get(i)) < 0)
             {
                 return true;
             }
-            else if(a.number[i] > b.number[i])
+            if(a.number.get(i).compareTo(b.number.get(i)) > 0)
             {
                 return false;
             }
@@ -206,19 +253,19 @@ public class BigInt
     public static boolean greater(BigInt a, BigInt b)
     {
         // Check if a and b contain differing number of digits
-        if(a.number.length != b.number.length)
+        if(a.number.size() != b.number.size())
         {
-            return a.number.length > b.number.length;
+            return a.number.size() > b.number.size();
         }
         
         // Starting from most-significant digit, check each digit for a > b
-        for(int i = a.number.length; i >= 0; --i)
+        for(int i = a.number.size(); i >= 0; --i)
         {
-            if(a.number[i] > b.number[i])
+            if(a.number.get(i).compareTo(b.number.get(i)) > 0)
             {
                 return true;
             }
-            else if(a.number[i] < b.number[i])
+            if(a.number.get(i).compareTo(b.number.get(i)) < 0)
             {
                 return false;
             }
@@ -240,7 +287,7 @@ public class BigInt
     
     
     //
-    //  The following functions allow you to chain multiple calls together
+    //  These overloads allow the user to chain multiple calls together
     //  
     //  BigInt a, b, c, d;
     //  ...
@@ -261,6 +308,7 @@ public class BigInt
     }
     
     public BigInt sub(BigInt b)
+    throws ArithmeticException
     {
         return sub(this, b);
     }
@@ -285,6 +333,41 @@ public class BigInt
         return mod(this, b);
     }
     
+    public BigInt powMod(BigInt e, BigInt m)
+    {
+        return powMod(this, e, m);
+    }
+    
+    public BigInt gcd(BigInt b)
+    {
+        return gcd(this, b);
+    }
+    
+    public boolean equals(BigInt b)
+    {
+        return equals(this, b);
+    }
+    
+    public boolean less(BigInt b)
+    {
+        return less(this, b);
+    }
+    
+    public boolean greater(BigInt b)
+    {
+        return greater(this, b);
+    }
+    
+    public boolean lessEqual(BigInt b)
+    {
+        return lessEqual(this, b);
+    }
+    
+    public boolean greaterEqual(BigInt b)
+    {
+        return greaterEqual(this, b);
+    }
+    
     
     
     /**
@@ -293,6 +376,13 @@ public class BigInt
     @Override
     public String toString()
     {
-        return "";
+        String result = "";
+        
+        for(int i = number.size() - 1; i >= 0; --i)
+        {
+            result += Integer.toString(number.get(i));
+        }
+        
+        return result;
     }
 }
