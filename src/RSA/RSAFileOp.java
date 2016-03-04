@@ -15,6 +15,31 @@ package RSA;
 public final class RSAFileOp
 {
     /**
+     * Constructs an RSA key from two XML-formatted files
+     * 
+     * @param publicFile    path to public key file
+     * @param privateFile   path to private key file
+     * @return              RSA object with keys loaded from public+private files
+     */
+    public static RSA loadKeys(String publicFile, String privateFile)
+    {
+        // TODO implement this
+        return null;
+    }
+    
+    /**
+     * Saves an RSA key to two XML-formatted files
+     * 
+     * @param key           RSA key object to store in files
+     * @param publicFile    path to public key file
+     * @param privateFile   path to private key file
+     */
+    public static void saveKeys(RSA key, String publicFile, String privateFile)
+    {
+        // TODO implement this
+    }
+    
+    /**
      * Encodes a file from ASCII to blocked format
      * @param inFile    Path to input ASCII text file to encode in blocked format
      * @param outFile   Path to output file containing file encoded in blocked format
@@ -22,7 +47,7 @@ public final class RSAFileOp
      */
     public static void blockFile(String inFile, String outFile, int blockSize)
     {
-        //@@ implement this
+        // TODO implement this
         BlockedMessage msg = new BlockedMessage(blockSize);
     }
     
@@ -34,7 +59,7 @@ public final class RSAFileOp
      */
     public static void unblockFile(String inFile, String outFile)
     {
-        //@@ implement this
+        // TODO implement this
     }
     
     /**
@@ -45,7 +70,7 @@ public final class RSAFileOp
      */
     public static void encryptFile(String inFile, String outFile, RSA key)
     {
-        //@@ implement this
+        // TODO implement this
     }
     
     /**
@@ -56,6 +81,6 @@ public final class RSAFileOp
      */
     public static void decryptFile(String inFile, String outFile, RSA key)
     {
-        //@@ implement this
+        // TODO implement this
     }
 }
