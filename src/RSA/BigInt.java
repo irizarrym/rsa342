@@ -9,7 +9,8 @@
 
 package RSA;
 
-import java.util.Vector;
+import java.util.Collections;
+import java.util.ArrayList;
 
 /**
  * Store and operate on arbitrarily large unsigned integers
@@ -21,7 +22,7 @@ public class BigInt
      * digit to the most-significant digit
      * e.g. 25143 -> [3, 4, 1, 5, 2]
      */
-    private final Vector<Byte> number;
+    private final ArrayList<Byte> number;
     
     /**
      * Constructs object initialized to zero
@@ -33,30 +34,60 @@ public class BigInt
     
     /**
      * Constructs object from long integer
-     * @param value 
+     * @param value
+     * @throws IllegalArgumentException if value < 0
      */
     public BigInt(long value)
     {
-        // TODO Implement this
-        assert(value >= 0);
+        if(value < 0)
+        {
+            throw new IllegalArgumentException("Negative value: " + value);
+        }
         
-        number = new Vector<Byte>();
+        number = new ArrayList<>();
         
+        // Loop must run at least once so there is at least one digit
+        // e.g. : 0 -> [0]
         do
         {
             number.add((byte)(value % 10));
-        } while(value >= 0);
+            value /= 10;
+        } while(value > 0);
     }
     
     /**
      * Construct object using number encoded in a string, i.e. "12345"
      * 
      * @param value     Unsigned integer encoded as string, e.g. "12345"
+     * @throws IllegalArgumentException if "value" contains any
+     * non-numeric characters or symbols
      */
     public BigInt(String value)
     {
-        // TODO Implement this
-        number = new Vector<Byte>();
+        number = new ArrayList<>();
+        
+        for(int i = value.length() - 1; i >= 0; --i) switch(value.charAt(i))
+        {
+            case '0': number.add((byte)0); break;
+            case '1': number.add((byte)1); break;
+            case '2': number.add((byte)2); break;
+            case '3': number.add((byte)3); break;
+            case '4': number.add((byte)4); break;
+            case '5': number.add((byte)5); break;
+            case '6': number.add((byte)6); break;
+            case '7': number.add((byte)7); break;
+            case '8': number.add((byte)8); break;
+            case '9': number.add((byte)9); break;
+            default:
+                throw new IllegalArgumentException(
+                    "Non-numeric digit: " + value.charAt(i));
+        }
+        
+        // Removes leading zeroes in value
+        // e.g. "000123" becomes "123"
+        trimZero();
+        
+        if(number.size() == 0) number.add((byte)0);
     }
     
     /**
@@ -66,7 +97,20 @@ public class BigInt
      */
     public BigInt(BigInt value)
     {
-        this.number = (Vector<Byte>) value.number.clone();
+        this.number = (ArrayList<Byte>) value.number.clone();
+    }
+    
+    /**
+     * Used internally by arithmetic operations to construct a BigInt
+     * from an ArrayList<Byte>
+     * 
+     * @param value 
+     */
+    private BigInt(ArrayList<Byte> digits)
+    {
+        number = (ArrayList<Byte>) digits.clone();
+        
+        trimZero();
     }
     
     /**
@@ -78,8 +122,31 @@ public class BigInt
      */
     public static BigInt add(BigInt a, BigInt b)
     {
-        // TODO Implement this
-        return null;
+        ArrayList<Byte> result = new ArrayList<>();
+        ArrayList<Byte> x = a.number;
+        ArrayList<Byte> y = b.number;
+        
+        final int stopAt = Integer.max(x.size(), y.size());
+        int overflow = 0;
+        for(int i = 0; i < stopAt || overflow > 0; ++i)
+        {
+            int nextDigit = overflow;
+            overflow = 0;
+            
+            if(i < x.size()) nextDigit += x.get(i);
+            if(i < y.size()) nextDigit += y.get(i);
+            
+            overflow = 0;
+            while(nextDigit > 9)
+            {
+                overflow += 1;
+                nextDigit -= 10;
+            }
+            
+            result.add((byte)nextDigit);
+        }
+        
+        return new BigInt(result);
     }
     
     /**
@@ -252,24 +319,7 @@ public class BigInt
      */
     public static boolean greater(BigInt a, BigInt b)
     {
-        // Check if a and b contain differing number of digits
-        if(a.number.size() != b.number.size())
-        {
-            return a.number.size() > b.number.size();
-        }
-        
-        // Starting from most-significant digit, check each digit for a > b
-        for(int i = a.number.size(); i >= 0; --i)
-        {
-            if(a.number.get(i).compareTo(b.number.get(i)) > 0)
-            {
-                return true;
-            }
-            if(a.number.get(i).compareTo(b.number.get(i)) < 0)
-            {
-                return false;
-            }
-        }
+        // TODO implement this
         
         return false;
     }
@@ -329,8 +379,7 @@ public class BigInt
         return add(this, b);
     }
     
-    public BigInt sub(BigInt b)
-    throws ArithmeticException
+    public BigInt sub(BigInt b) throws ArithmeticException
     {
         return sub(this, b);
     }
@@ -398,6 +447,8 @@ public class BigInt
     
     
     /**
+     * Constructs a string representation of the value
+     * 
      * @return  string representation of this
      */
     @Override
@@ -413,14 +464,41 @@ public class BigInt
         return result;
     }
     
+    /**
+     * Constructs a string representation of the value with
+     * a minimum number of digits. Leading zeroes will be
+     * added if necessary to satisfy minimum width, e.g.
+     * if digits == 8, then 12345 becomes "00012345".
+     * 
+     * @param digits    minimum number of digits in value
+     * @return          string representation of this
+     */
+    public String toString(int digits)
+    {
+        String result = toString();
+        
+        while(result.length() < digits)
+        {
+            result = "0" + result;
+        }
+        
+        return result;
+    }
+    
     
     
     /**
-     * Eliminates trailing zeroes in the stored number, e.g.
-     * "0000000543210" becomes "543210"
+     * Eliminates leading zeroes in the stored number, e.g.
+     * [3, 2, 1, 0, 0, 0] becomes [3, 2, 1] and
+     * [0, 0, 0] becomes [0]
      */
     private void trimZero()
     {
-        // TODO implement this
+        assert(number.size() > 0);
+        
+        while(number.size() > 1 && number.get(number.size() - 1) == 0)
+        {
+            number.remove(number.size() - 1);
+        }
     }
 }
