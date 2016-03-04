@@ -284,10 +284,38 @@ public class BigInt
         return !less(b, a);
     }
     
+    /**
+     * Applies an approximate algorithm to conclude either the number is probably
+     * prime or is definitely not prime.
+     * The probably of the number returned being composite is pow(2, -128).
+     * 
+     * @param a     the value to test for primality
+     * @return      true if number is probably prime; false if composite
+     */
+    public static boolean isPrime(BigInt a)
+    {
+        //@@ maybe implement this?
+        return false;
+    }
+    
+    /**
+     * Generates a prime number with the specified number of digits.
+     * An approximate prime generation algorithm is used.
+     * The probably of the number returned being composite is pow(2, -128).
+     * 
+     * @param digits    Number of digits in the prime number
+     * @return          BigInt object containing prime number
+     */
+    public static BigInt generatePrime(int digits)
+    {
+        //@@ maybe implement this?
+        return null;
+    }
+    
     
     
     //
-    //  These overloads allow the user to chain multiple calls together
+    //  The following overloads allow the user to chain multiple calls together
     //  
     //  BigInt a, b, c, d;
     //  ...
@@ -296,12 +324,6 @@ public class BigInt
     
     
     
-    /**
-     * Adds the values of this and b
-     * 
-     * @param b     right operand
-     * @return      BigInt.add(this, b)
-     */
     public BigInt add(BigInt b)
     {
         return add(this, b);
@@ -368,6 +390,11 @@ public class BigInt
         return greaterEqual(this, b);
     }
     
+    public boolean isPrime()
+    {
+        return isPrime(this);
+    }
+    
     
     
     /**
@@ -384,5 +411,16 @@ public class BigInt
         }
         
         return result;
+    }
+    
+    
+    
+    /**
+     * Eliminates trailing zeroes in the stored number, e.g.
+     * "0000000543210" becomes "543210"
+     */
+    private void trimZero()
+    {
+        //@@ implement this
     }
 }
