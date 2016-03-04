@@ -14,27 +14,24 @@ package RSA;
  */
 public final class RSAFileOp
 {
-    /**
-     * Constructs an RSA key from two XML-formatted files
-     * 
-     * @param publicFile    path to public key file
-     * @param privateFile   path to private key file
-     * @return              RSA object with keys loaded from public+private files
-     */
-    public static RSA loadKeys(String publicFile, String privateFile)
+    public static RSAPublicKey loadPublicKey(String filePath)
     {
         // TODO implement this
         return null;
     }
     
-    /**
-     * Saves an RSA key to two XML-formatted files
-     * 
-     * @param key           RSA key object to store in files
-     * @param publicFile    path to public key file
-     * @param privateFile   path to private key file
-     */
-    public static void saveKeys(RSA key, String publicFile, String privateFile)
+    public static RSAPrivateKey loadPrivateKey(String filePath)
+    {
+        // TODO implement this
+        return null;
+    }
+    
+    public static void savePublicKey(String filePath, RSAPublicKey key)
+    {
+        // TODO implement this
+    }
+    
+    public static void savePrivateKey(String filePath, RSAPrivateKey key)
     {
         // TODO implement this
     }
@@ -68,7 +65,7 @@ public final class RSAFileOp
      * @param outFile   path to output file in encrypted blocked format
      * @param key       public key to use for encryption
      */
-    public static void encryptFile(String inFile, String outFile, RSA key)
+    public static void encryptFile(String inFile, String outFile, RSAPublicKey key)
     {
         // TODO implement this
     }
@@ -79,7 +76,7 @@ public final class RSAFileOp
      * @param outFile   path to output file in raw blocked format
      * @param key       private key to use for decryption
      */
-    public static void decryptFile(String inFile, String outFile, RSA key)
+    public static void decryptFile(String inFile, String outFile, RSAPrivateKey key)
     {
         // TODO implement this
     }
