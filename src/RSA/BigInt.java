@@ -37,7 +37,7 @@ public class BigInt
      */
     public BigInt(long value)
     {
-        //@@ Implement this
+        // TODO Implement this
         assert(value >= 0);
         
         number = new Vector<Byte>();
@@ -55,7 +55,7 @@ public class BigInt
      */
     public BigInt(String value)
     {
-        //@@ Implement this
+        // TODO Implement this
         number = new Vector<Byte>();
     }
     
@@ -78,7 +78,7 @@ public class BigInt
      */
     public static BigInt add(BigInt a, BigInt b)
     {
-        //@@ Implement this
+        // TODO Implement this
         return null;
     }
     
@@ -92,7 +92,7 @@ public class BigInt
     public static BigInt sub(BigInt a, BigInt b)
     throws ArithmeticException
     {
-        //@@ Implement this
+        // TODO Implement this
         
         if(greater(a, b)) throw new ArithmeticException("BigInt.sub(a,b): a is greater than b"); 
        
@@ -108,7 +108,7 @@ public class BigInt
      */
     public static BigInt mul(BigInt a, BigInt b)
     {
-        //@@ Implement this
+        // TODO Implement this
         return null;
     }
     
@@ -121,7 +121,7 @@ public class BigInt
      */
     public static BigInt div(BigInt a, BigInt b)
     {
-        //@@ Implement this
+        // TODO Implement this
         return null;
     }
     
@@ -134,7 +134,7 @@ public class BigInt
      */
     public static BigInt mod(BigInt a, BigInt b)
     {
-        //@@ Implement this
+        // TODO Implement this
         // https://en.wikipedia.org/wiki/Montgomery_modular_multiplication
         return null;
     }
@@ -148,7 +148,7 @@ public class BigInt
      */
     public static BigInt pow(BigInt a, BigInt b)
     {
-        //@@ Implement this
+        // TODO Implement this
         // c = a+b -> n^c == n^(a+b) == n^a*n^b
         return null;
     }
@@ -163,7 +163,7 @@ public class BigInt
      */
     public static BigInt powMod(BigInt b, BigInt e, BigInt m)
     {
-        //@@ Implement this
+        // TODO Implement this
         
         /**
          * c = 1;
@@ -294,7 +294,7 @@ public class BigInt
      */
     public static boolean isPrime(BigInt a)
     {
-        //@@ maybe implement this?
+        // TODO maybe implement this?
         return false;
     }
     
@@ -308,7 +308,7 @@ public class BigInt
      */
     public static BigInt generatePrime(int digits)
     {
-        //@@ maybe implement this?
+        // TODO maybe implement this?
         return null;
     }
     
@@ -421,6 +421,6 @@ public class BigInt
      */
     private void trimZero()
     {
-        //@@ implement this
+        // TODO implement this
     }
 }

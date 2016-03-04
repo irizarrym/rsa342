@@ -21,7 +21,7 @@ public class RSA
      */
     public RSA(BigInt prime1, BigInt prime2)
     {
-        //@@ implement this
+        // TODO implement this
         e = null;
         d = null;
         n = null;
@@ -44,13 +44,13 @@ public class RSA
     
     public BigInt encrypt(BigInt value)
     {
-        //@@ implement this
+        // TODO implement this
         return null;
     }
     
     public BigInt decrypt(BigInt value)
     {
-        //@@ implement this
+        // TODO implement this
         return null;
     }
     
