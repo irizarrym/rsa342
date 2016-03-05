@@ -44,7 +44,7 @@ public class BigIntTest {
         BigInt a = new BigInt("123456789");
         BigInt b = new BigInt("12345");
         BigInt c = new BigInt("123469134");
-        BigInt zero = new BigInt(0);
+        BigInt zero = BigInt.ZERO;
         
         // Is addition commutative?
         assertTrue(a.add(b).equals(c));
@@ -83,7 +83,7 @@ public class BigIntTest {
         BigInt b = new BigInt("12345");
         BigInt c = new BigInt("123444444");
         BigInt d = a.sub(b);
-        BigInt zero = new BigInt(0);
+        BigInt zero = BigInt.ZERO;
         
         assertTrue(d.equals(c));
         assertTrue(a.sub(a).equals(zero));
@@ -92,16 +92,6 @@ public class BigIntTest {
         assertTrue(a.sub(zero).equals(a));
         assertTrue(b.sub(zero).equals(b));
         assertTrue(zero.sub(zero).equals(zero));
-    }
-    
-    @Test(expected=ArithmeticException.class)
-    public void subTest2()
-    {
-        BigInt a = new BigInt("123456789");
-        BigInt b = new BigInt("12345");
-        
-        // b is less than a so this should fail
-        b.sub(a);
     }
     
     @Test
@@ -120,6 +110,127 @@ public class BigIntTest {
             BigInt z = new BigInt(c);
             
             assertTrue(y.sub(x).equals(z));
+        }
+    }
+    
+    @Test(expected=ArithmeticException.class)
+    public void subTestThrows()
+    {
+        BigInt a = new BigInt("123456789");
+        BigInt b = new BigInt("12345");
+        
+        // b is less than a so this should fail
+        b.sub(a);
+    }
+    
+    @Test
+    public void mulTest()
+    {
+        BigInt a = new BigInt(12345);
+        BigInt b = new BigInt(54321);
+        BigInt c = new BigInt(12345*54321);
+        BigInt zero = BigInt.ZERO;
+        
+        assertTrue(a.mul(b).equals(c));
+        assertTrue(b.mul(a).equals(c));
+        assertTrue(a.mul(zero).equals(zero));
+        assertTrue(zero.mul(b).equals(zero));
+    }
+    
+    @Test
+    public void mulTestRandom()
+    {
+        Random r = new Random();
+        
+        for(int i = 0; i < 100; ++i)
+        {
+            int a = r.nextInt(10000);
+            int b = r.nextInt(10000);
+            int c = a * b;
+            
+            BigInt x = new BigInt(a);
+            BigInt y = new BigInt(b);
+            BigInt z = new BigInt(c);
+            
+            assertTrue(x.mul(y).equals(z));
+            assertTrue(y.mul(x).equals(z));
+        }
+    }
+    
+    @Test
+    public void divTest()
+    {
+        BigInt a = new BigInt(12345*7);
+        BigInt b = new BigInt(12345);
+        BigInt c = new BigInt(7);
+        
+        assertTrue(a.div(b).equals(c));
+        assertTrue(b.div(a).equals(BigInt.ZERO));
+        assertTrue(a.div(a).equals(BigInt.ONE));
+        assertTrue(b.div(b).equals(BigInt.ONE));
+        assertTrue(BigInt.ZERO.div(BigInt.ONE).equals(BigInt.ZERO));
+        assertTrue(BigInt.ONE.div(BigInt.TWO).equals(BigInt.ZERO));
+        assertTrue(a.div(BigInt.ONE).equals(a));
+        assertTrue(b.div(BigInt.ONE).equals(b));
+    }
+    
+    @Test
+    public void divTestRandom()
+    {
+        Random r = new Random();
+        
+        for(int i = 0; i < 100; ++i)
+        {
+            int a = r.nextInt(Integer.MAX_VALUE);
+            int b = r.nextInt(Integer.MAX_VALUE);
+            
+            BigInt x = new BigInt(a);
+            BigInt y = new BigInt(b);
+            BigInt z = new BigInt(a/b);
+            BigInt zz = new BigInt(b/a);
+            
+            assertTrue(x.div(y).equals(z));
+            assertTrue(y.div(x).equals(zz));
+        }
+    }
+    
+    @Test(expected=ArithmeticException.class)
+    public void divTestThrows()
+    {
+        BigInt.TEN.div(BigInt.ZERO);
+    }
+    
+    @Test
+    public void modTest()
+    {
+        BigInt a = new BigInt(12345*7);
+        BigInt b = new BigInt(12345);
+        
+        assertTrue(a.mod(b).equals(BigInt.ZERO));
+        assertTrue(b.mod(a).equals(b));
+        assertTrue(BigInt.ZERO.mod(BigInt.TEN).equals(BigInt.ZERO));
+        assertTrue(a.mod(a).equals(BigInt.ZERO));
+        assertTrue(b.mod(b).equals(BigInt.ZERO));
+        assertTrue(BigInt.ONE.mod(BigInt.ONE).equals(BigInt.ZERO));
+    }
+    
+    @Test
+    public void modTestRandom()
+    {
+        Random r = new Random();
+        
+        for(int i = 0; i < 100; ++i)
+        {
+            int a = r.nextInt(Integer.MAX_VALUE);
+            int b = r.nextInt(Integer.MAX_VALUE);
+            
+            BigInt x = new BigInt(a);
+            BigInt y = new BigInt(b);
+            BigInt z = new BigInt(a%b);
+            BigInt zz = new BigInt(b%a);
+            
+            assertTrue(x.mod(y).equals(z));
+            assertTrue(y.mod(x).equals(zz));
         }
     }
     

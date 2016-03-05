@@ -18,8 +18,17 @@ import java.util.ArrayList;
 public class BigInt
 {
     /**
-     * Stores the integer as individual decimal digits from the least-significant
-     * digit to the most-significant digit
+     * Predefined constants for some common values also used internally
+     * by this class
+     */
+    public static final BigInt ZERO = new BigInt(0);
+    public static final BigInt ONE  = new BigInt(1);
+    public static final BigInt TWO  = new BigInt(2);
+    public static final BigInt TEN  = new BigInt(10);
+    
+    /**
+     * Stores the integer as individual decimal digits from the
+     * least-significant digit to the most-significant digit
      * e.g. 25143 -> [3, 4, 1, 5, 2]
      */
     private final ArrayList<Byte> number;
@@ -104,12 +113,14 @@ public class BigInt
      * Used internally by arithmetic operations to construct a BigInt
      * from an ArrayList<Byte>
      * 
-     * @param value 
+     * @param digits 
      */
     private BigInt(ArrayList<Byte> digits)
     {
         number = (ArrayList<Byte>) digits.clone();
         
+        // Removes leading zeroes in value
+        // e.g. "000123" becomes "123"
         trimZero();
     }
     
@@ -137,9 +148,9 @@ public class BigInt
             if(i < y.size()) nextDigit += y.get(i);
             
             overflow = 0;
-            while(nextDigit > 9)
+            if(nextDigit > 9)
             {
-                overflow += 1;
+                overflow = 1;
                 nextDigit -= 10;
             }
             
@@ -172,9 +183,9 @@ public class BigInt
             if(i < y.size()) nextDigit -= y.get(i);
             
             underflow = 0;
-            while(nextDigit < 0)
+            if(nextDigit < 0)
             {
-                underflow -= 1;
+                underflow = -1;
                 nextDigit += 10;
             }
             
@@ -193,21 +204,97 @@ public class BigInt
      */
     public static BigInt mul(BigInt a, BigInt b)
     {
-        // TODO Implement this
-        return null;
+        BigInt result = ZERO;
+        ArrayList<Byte> x = a.number;
+        ArrayList<Byte> y = b.number;
+        
+        // Swap values if x has fewer digits than y
+        // This will make the multiplication operation faster
+        // This is safe because multiplication is commutative
+        if(x.size() < y.size())
+        {
+            ArrayList<Byte> z = x;
+            x = y;
+            y = z;
+        }
+        
+        int padding = 0;
+        for(byte i : y)
+        {
+            if(i == 0)
+            {
+                padding += 1;
+                continue;
+            }
+            
+            ArrayList<Byte> temp = new ArrayList<>();
+            int overflow = 0;
+            
+            for(int k = 0; k < padding; ++k)
+            {
+                temp.add((byte)0);
+            }
+            padding += 1;
+            
+            for(byte j : x)
+            {
+                int nextDigit = i*j + overflow;
+                overflow = 0;
+                if(nextDigit > 9)
+                {
+                    overflow = nextDigit / 10;
+                    nextDigit %= 10;
+                }
+                temp.add((byte)nextDigit);
+            }
+            
+            if(overflow > 0) temp.add((byte)overflow);
+            
+            result = result.add(new BigInt(temp));
+        }
+        
+        return result;
     }
     
     /**
-     * Divides the values of a and b
+     * Divides the values of num and den
      * 
-     * @param a     left operand
-     * @param b     right operand
-     * @return      new BigInt with the result of a / b
+     * @param num   numerator
+     * @param den   denominator
+     * @return      new BigInt with the result of num / den
      */
-    public static BigInt div(BigInt a, BigInt b)
+    public static BigInt div(BigInt num, BigInt den)
     {
-        // TODO Implement this
-        return null;
+        if(den.equals(ZERO)) throw new ArithmeticException("Divide by Zero Error");
+        
+        if(num.less(den)) return ZERO;
+        
+        ArrayList<Byte> result = new ArrayList<>();
+        ArrayList<Byte> n      = (ArrayList<Byte>) num.number.clone();
+        BigInt remainder = ZERO;
+        
+        // Reverse n so that it begins with most-significant digit
+        Collections.reverse(n);
+        
+        // Perform division just like grade school...
+        for(byte digit : n)
+        {
+            remainder = remainder.mul(TEN).add(new BigInt(digit));
+            
+            byte nextDigit = 0;
+            while(den.lessEqual(remainder))
+            {
+                nextDigit += 1;
+                remainder = remainder.sub(den);
+            }
+            
+            result.add(nextDigit);
+        }
+        
+        // Expecting least-significant digit to be first
+        Collections.reverse(result);
+        
+        return new BigInt(result);
     }
     
     /**
@@ -219,9 +306,7 @@ public class BigInt
      */
     public static BigInt mod(BigInt a, BigInt b)
     {
-        // TODO Implement this
-        // https://en.wikipedia.org/wiki/Montgomery_modular_multiplication
-        return null;
+        return a.sub(a.div(b).mul(b));
     }
     
     /**
@@ -361,12 +446,12 @@ public class BigInt
     
     public static boolean lessEqual(BigInt a, BigInt b)
     {
-        return !greater(b, a);
+        return !greater(a, b);
     }
     
     public static boolean greaterEqual(BigInt a, BigInt b)
     {
-        return !less(b, a);
+        return !less(a, b);
     }
     
     /**
