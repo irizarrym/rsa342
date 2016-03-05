@@ -318,8 +318,14 @@ public class BigInt
      */
     public static BigInt pow(BigInt a, BigInt b)
     {
-        // TODO Implement this
-        // c = a+b -> n^c == n^(a+b) == n^a*n^b
+        // TODO Working on this
+        
+        // Special cases
+        if(a.equals(ZERO)) return ZERO;
+        if(a.equals(ONE))  return ONE;
+        if(b.equals(ZERO)) return ONE;
+        if(b.equals(ONE))  return a;
+        
         return null;
     }
     
@@ -344,7 +350,8 @@ public class BigInt
     }
     
     /**
-     * Computes the greatest common divisor of a and b
+     * Computes the greatest common divisor of a and b using the
+     * Euclidean algorithm
      * 
      * @param a     value 1
      * @param b     value 2
@@ -352,7 +359,18 @@ public class BigInt
      */
     public static BigInt gcd(BigInt a, BigInt b)
     {
-        return null;
+        // Special cases
+        if(a.equals(ZERO)) return b;
+        if(b.equals(ZERO)) return a;
+        
+        while(!b.equals(ZERO))
+        {
+            BigInt t = b;
+            b = a.mod(b);
+            a = t;
+        }
+        
+        return a;
     }
     
     /**
