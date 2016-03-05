@@ -66,6 +66,11 @@ public class BigIntTest {
         
         assertTrue(d.equals(c));
         assertTrue(a.sub(a).equals(zero));
+        assertTrue(b.sub(b).equals(zero));
+        
+        assertTrue(a.sub(zero).equals(a));
+        assertTrue(b.sub(zero).equals(b));
+        assertTrue(zero.sub(zero).equals(zero));
     }
     
     @Test(expected=ArithmeticException.class)
@@ -92,13 +97,39 @@ public class BigIntTest {
     @Test
     public void lessTest()
     {
-        BigInt a = new BigInt("12345");
-        BigInt b = new BigInt("54321");
+        BigInt a = new BigInt(12345);
+        BigInt b = new BigInt(54321);
+        BigInt zero = new BigInt(0);
         
         assertTrue(a.less(b));
         assertFalse(b.less(a));
         assertFalse(a.less(a));
         assertFalse(b.less(b));
+        
+        assertTrue(zero.less(a));
+        assertTrue(zero.less(b));
+        assertFalse(a.less(zero));
+        assertFalse(b.less(zero));
+        assertFalse(zero.less(zero));
+    }
+    
+    @Test
+    public void greaterTest()
+    {
+        BigInt a = new BigInt(12345);
+        BigInt b = new BigInt(54321);
+        BigInt zero = new BigInt(0);
+        
+        assertFalse(a.greater(b));
+        assertTrue(b.greater(a));
+        assertFalse(a.greater(a));
+        assertFalse(b.greater(b));
+        
+        assertTrue(a.greater(zero));
+        assertTrue(b.greater(zero));
+        assertFalse(zero.greater(a));
+        assertFalse(zero.greater(b));
+        assertFalse(zero.less(zero));
     }
     
     @Test

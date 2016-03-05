@@ -159,11 +159,29 @@ public class BigInt
     public static BigInt sub(BigInt a, BigInt b)
     throws ArithmeticException
     {
-        // TODO Implement this
+        if(less(a, b)) throw new ArithmeticException("BigInt.sub(a,b): a is less than b");
         
-        if(greater(a, b)) throw new ArithmeticException("BigInt.sub(a,b): a is greater than b"); 
-       
-        return null;
+        ArrayList<Byte> result = new ArrayList<>();
+        ArrayList<Byte> x = a.number;
+        ArrayList<Byte> y = b.number;
+        
+        int underflow = 0;
+        for(int i = 0; i < x.size(); ++i)
+        {
+            int nextDigit = x.get(i) + underflow;
+            if(i < y.size()) nextDigit -= y.get(i);
+            
+            underflow = 0;
+            while(nextDigit < 0)
+            {
+                underflow -= 1;
+                nextDigit += 10;
+            }
+            
+            result.add((byte)nextDigit);
+        }
+        
+        return new BigInt(result);
     }
     
     /**
@@ -295,7 +313,7 @@ public class BigInt
         }
         
         // Starting from most-significant digit, check each digit for a < b
-        for(int i = a.number.size(); i >= 0; --i)
+        for(int i = a.number.size() - 1; i >= 0; --i)
         {
             if(a.number.get(i).compareTo(b.number.get(i)) < 0)
             {
@@ -319,7 +337,24 @@ public class BigInt
      */
     public static boolean greater(BigInt a, BigInt b)
     {
-        // TODO implement this
+        // Check if a and b contain differing number of digits
+        if(a.number.size() != b.number.size())
+        {
+            return a.number.size() > b.number.size();
+        }
+        
+        // Starting from most-significant digit, check each digit for a > b
+        for(int i = a.number.size() - 1; i >= 0; --i)
+        {
+            if(a.number.get(i).compareTo(b.number.get(i)) > 0)
+            {
+                return true;
+            }
+            if(a.number.get(i).compareTo(b.number.get(i)) < 0)
+            {
+                return false;
+            }
+        }
         
         return false;
     }
