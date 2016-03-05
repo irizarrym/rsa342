@@ -1,8 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+    Group 58:
+    Michael Irizarry (miriza6@uic.edu)
+    Wenkan Zhu (wzhu24@uic.edu)
+
+    CS 342 - Project 3
+    RSA
+*/
+
 package RSA;
 
 import java.util.Random;
@@ -14,11 +18,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author Michael
+ * Unit tests for class BigInt
  */
-public class BigIntTest {
-    
+public class BigIntTest
+{
     public BigIntTest() {
     }
     
@@ -36,6 +39,30 @@ public class BigIntTest {
     
     @After
     public void tearDown() {
+    }
+    
+    @Test
+    public void constructorTest()
+    {
+        assertEquals("12345", (new BigInt(12345)).toString());
+        assertEquals("12345", (new BigInt("12345")).toString());
+        assertEquals("12345",
+            new BigInt(new BigInt(12345)).toString());
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void constructorTestThrow()
+    {
+        // Strings must only contain numeric digits,
+        // no other characters or symbols.
+        new BigInt("000 111");
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void constructorTestThrow2()
+    {
+        // Integers must not be negative
+        new BigInt(-5);
     }
     
     @Test
