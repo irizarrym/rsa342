@@ -5,6 +5,7 @@
  */
 package RSA;
 
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -56,6 +57,26 @@ public class BigIntTest {
     }
     
     @Test
+    public void addTestRandom()
+    {
+        Random r = new Random();
+        
+        for(int i = 0; i < 100; ++i)
+        {
+            int a = r.nextInt(Integer.MAX_VALUE / 2);
+            int b = r.nextInt(Integer.MAX_VALUE / 2);
+            int c = a + b;
+            
+            BigInt x = new BigInt(a);
+            BigInt y = new BigInt(b);
+            BigInt z = new BigInt(c);
+            
+            assertTrue(x.add(y).equals(z));
+            assertTrue(y.add(x).equals(z));
+        }
+    }
+    
+    @Test
     public void subTest()
     {
         BigInt a = new BigInt("123456789");
@@ -81,6 +102,25 @@ public class BigIntTest {
         
         // b is less than a so this should fail
         b.sub(a);
+    }
+    
+    @Test
+    public void subTestRandom()
+    {
+        Random r = new Random();
+        
+        for(int i = 0; i < 100; ++i)
+        {
+            int a = r.nextInt(Integer.MAX_VALUE / 2);
+            int b = r.nextInt(Integer.MAX_VALUE / 2) + a;
+            int c = b - a;
+            
+            BigInt x = new BigInt(a);
+            BigInt y = new BigInt(b);
+            BigInt z = new BigInt(c);
+            
+            assertTrue(y.sub(x).equals(z));
+        }
     }
     
     @Test
