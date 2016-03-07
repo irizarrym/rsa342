@@ -414,40 +414,6 @@ public class BigIntTest
     }
     
     @Test
-    public void isPrimeTest()
-    {
-        // Three large prime numbers...
-        String s1   = "3432031961807721128272555456084784389356675749704300733"
-                    + "0482608143343054667115134377134463699176949771491341170"
-                    + "69447433150420619418300514900710614456357677";
-        String s2   = "2540466748247826809908424798999322389214635768382465990"
-                    + "7845625141241245246919701464501179949183355980222014906"
-                    + "90264878944085505581907518471961415423867301";
-        String s3   = "4405407657232373019056619434180352628543129818697310644"
-                    + "2927831894441865877327615394159140538630716022034166785"
-                    + "52822233525966174160015274467413033357427743";
-        
-        BigInt p1 = new BigInt(s1);
-        BigInt p2 = new BigInt(s2);
-        BigInt p3 = new BigInt(s3);
-        
-        BigInt p1p2 = p1.mul(p2);
-        BigInt p1p3 = p1.mul(p3);
-        BigInt p2p3 = p2.mul(p3);
-        
-        // TODO maybe implement this
-        
-        /*
-        assertTrue(p1.isPrime());
-        assertTrue(p1.isPrime());
-        assertTrue(p1.isPrime());
-        assertFalse(p1p2.isPrime());
-        assertFalse(p1p3.isPrime());
-        assertFalse(p2p3.isPrime());
-        */
-    }
-    
-    @Test
     public void toStringTest()
     {
         BigInt a = new BigInt(93485943);

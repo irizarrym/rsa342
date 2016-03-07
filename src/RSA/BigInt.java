@@ -11,6 +11,7 @@ package RSA;
 
 import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Store and operate on arbitrarily large unsigned integers
@@ -298,15 +299,26 @@ public class BigInt
     }
     
     /**
-     * Computes the result of (a mod b)
+     * Computes the result of (a mod m)
      * 
      * @param a     left operand
-     * @param b     right operand
-     * @return      new BigInt with the result of a mod b
+     * @param m     right operand
+     * @return      new BigInt with the result of a mod m
      */
-    public static BigInt mod(BigInt a, BigInt b)
+    public static BigInt mod(BigInt a, BigInt m)
     {
-        return sub(a, div(a, b).mul(b));
+        // Special cases
+        if(m.equals(ONE))
+        {
+            return ZERO;
+        }
+        if(m.equals(TWO))
+        {
+            return (a.number.get(0)%2 == 1) ? ONE : ZERO;
+        }
+        
+        // General case
+        return sub(a, div(a, m).mul(m));
     }
     
     /**
@@ -489,31 +501,24 @@ public class BigInt
     }
     
     /**
-     * Applies an approximate algorithm to conclude either the number is probably
-     * prime or is definitely not prime.
-     * The probably of the number returned being composite is pow(2, -128).
+     * Generates a random BigInt with specified number of digits
      * 
-     * @param a     the value to test for primality
-     * @return      true if number is probably prime; false if composite
+     * @param digits    number of decimal digits
+     * @return          BigInt with randomly generated value
      */
-    public static boolean isPrime(BigInt a)
+    public static BigInt randInt(int digits, Random r)
     {
-        // TODO maybe implement this?
-        return false;
-    }
-    
-    /**
-     * Generates a prime number with the specified number of digits.
-     * An approximate prime generation algorithm is used.
-     * The probably of the number returned being composite is pow(2, -128).
-     * 
-     * @param digits    Number of digits in the prime number
-     * @return          BigInt object containing prime number
-     */
-    public static BigInt generatePrime(int digits)
-    {
-        // TODO maybe implement this?
-        return null;
+        if(digits < 0)
+            throw new IllegalArgumentException("Required: digits >= 0");
+        
+        ArrayList<Byte> tmp = new ArrayList<>();
+        
+        for(int i = 0; i < digits; ++i)
+        {
+            tmp.add((byte)r.nextInt(10));
+        }
+        
+        return new BigInt(tmp);
     }
     
     
@@ -591,11 +596,6 @@ public class BigInt
     public boolean greaterEqual(BigInt b)
     {
         return greaterEqual(this, b);
-    }
-    
-    public boolean isPrime()
-    {
-        return isPrime(this);
     }
     
     
