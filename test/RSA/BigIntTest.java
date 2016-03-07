@@ -187,11 +187,12 @@ public class BigIntTest
     @Test
     public void divTest()
     {
-        BigInt a = new BigInt(12345*7);
+        BigInt a = new BigInt(12345*67890);
         BigInt b = new BigInt(12345);
-        BigInt c = new BigInt(7);
+        BigInt c = new BigInt(67890);
         
         assertTrue(a.div(b).equals(c));
+        assertTrue(a.div(c).equals(b));
         assertTrue(b.div(a).equals(BigInt.ZERO));
         assertTrue(a.div(a).equals(BigInt.ONE));
         assertTrue(b.div(b).equals(BigInt.ONE));
@@ -230,15 +231,26 @@ public class BigIntTest
     @Test
     public void modTest()
     {
-        BigInt a = new BigInt(12345*7);
+        BigInt a = new BigInt(12345*67890);
         BigInt b = new BigInt(12345);
+        BigInt c = new BigInt(67890);
+        BigInt d = new BigInt(67890%12345);
         
         assertTrue(a.mod(b).equals(BigInt.ZERO));
-        assertTrue(b.mod(a).equals(b));
+        assertTrue(a.mod(c).equals(BigInt.ZERO));
+        assertTrue(c.mod(b).equals(d));
+        
+        // Special cases
         assertTrue(BigInt.ZERO.mod(BigInt.TEN).equals(BigInt.ZERO));
         assertTrue(a.mod(a).equals(BigInt.ZERO));
         assertTrue(b.mod(b).equals(BigInt.ZERO));
         assertTrue(BigInt.ONE.mod(BigInt.ONE).equals(BigInt.ZERO));
+    }
+    
+    @Test(expected=ArithmeticException.class)
+    public void modTestThrows()
+    {
+        BigInt.TEN.mod(BigInt.ZERO);
     }
     
     @Test
@@ -262,9 +274,54 @@ public class BigIntTest
     }
     
     @Test
+    public void powTest()
+    {
+        // Special cases
+        assertTrue(BigInt.ZERO.pow(BigInt.TEN).equals(BigInt.ZERO));
+        assertTrue(BigInt.ONE.pow(BigInt.TEN).equals(BigInt.ONE));
+        assertTrue(BigInt.TEN.pow(BigInt.ZERO).equals(BigInt.ONE));
+        assertTrue(BigInt.TEN.pow(BigInt.ONE).equals(BigInt.TEN));
+        
+        BigInt b1 = new BigInt(21);
+        BigInt b2 = new BigInt(32);
+        BigInt b3 = new BigInt("2046526777500669368329342638102622164679041");
+        BigInt b4 = new BigInt("40564819207303340847894502572032");
+        
+        assertTrue(b1.pow(b2).equals(b3));
+        assertTrue(b2.pow(b1).equals(b4));
+    }
+    
+    @Test(expected=ArithmeticException.class)
+    public void powTestThrows()
+    {
+        BigInt.ZERO.pow(BigInt.ZERO);
+    }
+    
+    @Test
+    public void powModTest()
+    {
+        BigInt b1     = new BigInt("990385210046793075829578397434");
+        BigInt b2     = new BigInt("1018207059656383516845104220445");
+        BigInt b3     = new BigInt("363952042102193411609795982999");
+        BigInt b1b2b3 = new BigInt("159311904099203540437889561406");
+        BigInt b1b3b2 = new BigInt("82796130473007089466613747799");
+        BigInt b2b1b3 = new BigInt("12707121232430677560373289551");
+        BigInt b2b3b1 = new BigInt("244642264514542331047407094969");
+        BigInt b3b1b2 = new BigInt("650271680242536409046674022991");
+        BigInt b3b2b1 = new BigInt("644214054420609868961254814919");
+        
+        assertTrue(BigInt.powMod(b1, b2, b3).equals(b1b2b3));
+        assertTrue(BigInt.powMod(b1, b3, b2).equals(b1b3b2));
+        assertTrue(BigInt.powMod(b2, b1, b3).equals(b2b1b3));
+        assertTrue(BigInt.powMod(b2, b3, b1).equals(b2b3b1));
+        assertTrue(BigInt.powMod(b3, b1, b2).equals(b3b1b2));
+        assertTrue(BigInt.powMod(b3, b2, b1).equals(b3b2b1));
+    }
+    
+    @Test
     public void gcdTest()
     {
-        // These are all large prime numbers
+        // Three large prime numbers...
         String s1   = "3432031961807721128272555456084784389356675749704300733"
                     + "0482608143343054667115134377134463699176949771491341170"
                     + "69447433150420619418300514900710614456357677";
@@ -275,36 +332,36 @@ public class BigIntTest
                     + "2927831894441865877327615394159140538630716022034166785"
                     + "52822233525966174160015274467413033357427743";
         
-        BigInt b1 = new BigInt(s1);
-        BigInt b2 = new BigInt(s2);
-        BigInt b3 = new BigInt(s3);
+        BigInt p1 = new BigInt(s1);
+        BigInt p2 = new BigInt(s2);
+        BigInt p3 = new BigInt(s3);
         
-        BigInt b4 = b1.mul(b2);
-        BigInt b5 = b2.mul(b3);
+        BigInt p1p2 = p1.mul(p2);
+        BigInt p2p3 = p2.mul(p3);
         
         // These numbers are prime so should have no common factors
-        assertTrue(b1.gcd(b2).equals(BigInt.ONE));
-        assertTrue(b1.gcd(b3).equals(BigInt.ONE));
-        assertTrue(b2.gcd(b3).equals(BigInt.ONE));
+        assertTrue(p1.gcd(p2).equals(BigInt.ONE));
+        assertTrue(p1.gcd(p3).equals(BigInt.ONE));
+        assertTrue(p2.gcd(p3).equals(BigInt.ONE));
         
         // b4 and b5 share a common factor of b2
-        assertTrue(b4.gcd(b5).equals(b2));
+        assertTrue(p1p2.gcd(p2p3).equals(p2));
         
         // Test for divisibility
-        assertTrue(b4.gcd(b1).equals(b1));
-        assertTrue(b4.gcd(b2).equals(b2));
-        assertTrue(b4.gcd(b3).equals(BigInt.ONE));
+        assertTrue(p1p2.gcd(p1).equals(p1));
+        assertTrue(p1p2.gcd(p2).equals(p2));
+        assertTrue(p1p2.gcd(p3).equals(BigInt.ONE));
         
-        assertTrue(b5.gcd(b1).equals(BigInt.ONE));
-        assertTrue(b5.gcd(b2).equals(b2));
-        assertTrue(b5.gcd(b3).equals(b3));
+        assertTrue(p2p3.gcd(p1).equals(BigInt.ONE));
+        assertTrue(p2p3.gcd(p2).equals(p2));
+        assertTrue(p2p3.gcd(p3).equals(p3));
         
         // Zero|One Tests
-        assertTrue(BigInt.ZERO.gcd(b1).equals(b1));
-        assertTrue(b1.gcd(BigInt.ZERO).equals(b1));
+        assertTrue(BigInt.ZERO.gcd(p1).equals(p1));
+        assertTrue(p1.gcd(BigInt.ZERO).equals(p1));
         assertTrue(BigInt.ZERO.gcd(BigInt.ZERO).equals(BigInt.ZERO));
-        assertTrue(BigInt.ONE.gcd(b1).equals(BigInt.ONE));
-        assertTrue(b1.gcd(BigInt.ONE).equals(BigInt.ONE));
+        assertTrue(BigInt.ONE.gcd(p1).equals(BigInt.ONE));
+        assertTrue(p1.gcd(BigInt.ONE).equals(BigInt.ONE));
     }
     
     @Test
@@ -354,6 +411,40 @@ public class BigIntTest
         assertFalse(zero.greater(a));
         assertFalse(zero.greater(b));
         assertFalse(zero.less(zero));
+    }
+    
+    @Test
+    public void isPrimeTest()
+    {
+        // Three large prime numbers...
+        String s1   = "3432031961807721128272555456084784389356675749704300733"
+                    + "0482608143343054667115134377134463699176949771491341170"
+                    + "69447433150420619418300514900710614456357677";
+        String s2   = "2540466748247826809908424798999322389214635768382465990"
+                    + "7845625141241245246919701464501179949183355980222014906"
+                    + "90264878944085505581907518471961415423867301";
+        String s3   = "4405407657232373019056619434180352628543129818697310644"
+                    + "2927831894441865877327615394159140538630716022034166785"
+                    + "52822233525966174160015274467413033357427743";
+        
+        BigInt p1 = new BigInt(s1);
+        BigInt p2 = new BigInt(s2);
+        BigInt p3 = new BigInt(s3);
+        
+        BigInt p1p2 = p1.mul(p2);
+        BigInt p1p3 = p1.mul(p3);
+        BigInt p2p3 = p2.mul(p3);
+        
+        // TODO maybe implement this
+        
+        /*
+        assertTrue(p1.isPrime());
+        assertTrue(p1.isPrime());
+        assertTrue(p1.isPrime());
+        assertFalse(p1p2.isPrime());
+        assertFalse(p1p3.isPrime());
+        assertFalse(p2p3.isPrime());
+        */
     }
     
     @Test

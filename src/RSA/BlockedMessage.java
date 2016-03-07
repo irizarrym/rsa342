@@ -104,7 +104,6 @@ public class BlockedMessage
     
     private int encodeChar(char c) throws Exception
     {
-        // TODO implement this
         switch(c)
         {
             case '\0': return 0;
@@ -208,8 +207,8 @@ public class BlockedMessage
             case '}': return 98;
             case '~': return 99;
                 
-            // TODO throw appropriate exception
-            default: throw new Exception();
+            default: 
+            throw new IllegalArgumentException("No mappting for character" + c);
         }
     }
     
@@ -318,8 +317,8 @@ public class BlockedMessage
             case 98: return '}';
             case 99: return '~';
                 
-            // TODO throw appropriate exception
-            default: throw new Exception();
+            default: 
+            throw new IllegalArgumentException("No mapping for value: " +value);
         }
     }
 }

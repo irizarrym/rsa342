@@ -306,47 +306,68 @@ public class BigInt
      */
     public static BigInt mod(BigInt a, BigInt b)
     {
-        return a.sub(a.div(b).mul(b));
+        return sub(a, div(a, b).mul(b));
     }
     
     /**
-     * Computes the result of a^b
+     * Computes the result of base^exp
      * 
-     * @param a     left operand
-     * @param b     right operand
-     * @return      new BigInt with the result of a^b
+     * @param base  left operand
+     * @param exp   right operand
+     * @return      new BigInt with the result of base^exp
+     * @see         http://math.stackexchange.com/a/87410
      */
-    public static BigInt pow(BigInt a, BigInt b)
+    public static BigInt pow(BigInt base, BigInt exp)
     {
-        // TODO Working on this
-        
         // Special cases
-        if(a.equals(ZERO)) return ZERO;
-        if(a.equals(ONE))  return ONE;
-        if(b.equals(ZERO)) return ONE;
-        if(b.equals(ONE))  return a;
+        if(base.equals(ZERO))
+        {
+            // 0^0 is undefined so throw error
+            if(exp.equals(ZERO))
+            {
+                throw new ArithmeticException("Undefined: pow(0, 0)");
+            }
+            else return ZERO;
+        }
+        if(base.equals(ONE))  return ONE;
+        if(exp.equals(ZERO)) return ONE;
+        if(exp.equals(ONE))  return base;
+        if(exp.equals(TWO)) return mul(base, base);
         
-        return null;
+        BigInt r = ONE;
+        while(exp.greater(ZERO))
+        {
+            if(mod(exp, TWO).equals(ONE)) r = mul(r, base);
+            base = mul(base, base);
+            exp = div(exp, TWO);
+        }
+        
+        return r;
     }
     
     /**
-     * Implements an efficient algorithm for computing b^e%m
+     * Implements an efficient algorithm for computing base^exp%modulo
      * 
-     * @param b     Base
-     * @param e     Exponent
-     * @param m     Modulus
-     * @return      new BigInt with the result of b^e%m
+     * @param base      Base
+     * @param exp       Exponent
+     * @param modulo    Modulus
+     * @return          new BigInt with the result of b^e%m
+     * @see             http://stackoverflow.com/a/5989549
      */
-    public static BigInt powMod(BigInt b, BigInt e, BigInt m)
+    public static BigInt powMod(BigInt base, BigInt exp, BigInt modulo)
     {
-        // TODO Implement this
+        // Base Case
+        if(exp.equals(ZERO)) return ONE;
         
-        /**
-         * c = 1;
-         * for(int i = 0; i < e; i++)
-         *     c = (c*m)%n;
-         */
-        return null;
+        // Recursive Case
+        if(mod(exp, TWO).equals(ZERO))
+        {
+            return powMod(base, div(exp, TWO), modulo).pow(TWO).mod(modulo);
+        }
+        else
+        {
+            return powMod(base, sub(exp, ONE), modulo).mul(base).mod(modulo);
+        }
     }
     
     /**
@@ -440,33 +461,28 @@ public class BigInt
      */
     public static boolean greater(BigInt a, BigInt b)
     {
-        // Check if a and b contain differing number of digits
-        if(a.number.size() != b.number.size())
-        {
-            return a.number.size() > b.number.size();
-        }
-        
-        // Starting from most-significant digit, check each digit for a > b
-        for(int i = a.number.size() - 1; i >= 0; --i)
-        {
-            if(a.number.get(i).compareTo(b.number.get(i)) > 0)
-            {
-                return true;
-            }
-            if(a.number.get(i).compareTo(b.number.get(i)) < 0)
-            {
-                return false;
-            }
-        }
-        
-        return false;
+        return less(b, a);
     }
     
+    /**
+     * Computes the result of a <= b
+     * 
+     * @param a     left operand
+     * @param b     right operand
+     * @return      true if a <= b; false if a > b
+     */
     public static boolean lessEqual(BigInt a, BigInt b)
     {
-        return !greater(a, b);
+        return !less(b, a);
     }
     
+    /**
+     * Computes the result of a >= b
+     * 
+     * @param a     left operand
+     * @param b     right operand
+     * @return      true if a >= b; false if a < b
+     */
     public static boolean greaterEqual(BigInt a, BigInt b)
     {
         return !less(a, b);
