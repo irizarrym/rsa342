@@ -118,7 +118,8 @@ public class BigInt
      */
     private BigInt(ArrayList<Byte> digits)
     {
-        number = (ArrayList<Byte>) digits.clone();
+        // number = (ArrayList<Byte>) digits.clone();
+        number = digits;
         
         // Removes leading zeroes in value
         // e.g. "000123" becomes "123"

@@ -27,18 +27,6 @@ public class RSAKeyGen
         prvKey = null;
     }
     
-    /**
-     * Take keys from existing publicKey and privateKey objects
-     * 
-     * @param publicKey
-     * @param privateKey 
-     */
-    public RSAKeyGen(RSAPublicKey publicKey, RSAPrivateKey privateKey)
-    {
-        pubKey = publicKey;
-        prvKey = privateKey;
-    }
-    
     public RSAPublicKey publicKey()
     {
         return pubKey;

@@ -47,22 +47,54 @@ public class BlockedMessage
     
     
     
+    /**
+     * Get the number of ASCII characters in the message
+     * 
+     * @return  number of ASCII characters
+     */
     public int count()
     {
         return message.length();
     }
     
+    /**
+     * Get the number of blocks used to compose the message
+     * 
+     * @return  number of blocks
+     */
+    public int countBlocks()
+    {
+        // TODO implement this
+        return 0;
+    }
+    
+    /**
+     * Append a string to the message
+     * 
+     * @param ascii 
+     */
     public void append(String ascii)
     {
         message += ascii;
     }
     
+    /**
+     * Append a pre-encoded block to the message
+     * 
+     * @param block 
+     */
     public void append(BigInt block)
     {
         // TODO implement this
     }
     
-    BigInt getBlock(int index)
+    /**
+     * Get a single block of the message
+     * 
+     * @param index     0 <= index < countBlocks()
+     * @return          Encoded block at index
+     */
+    public BigInt getBlock(int index)
     {
         // TODO implement this
         
@@ -71,7 +103,12 @@ public class BlockedMessage
         return null;
     }
     
-    BigInt[] getBlocks()
+    /**
+     * Get the entire message encoded as an array of blocks
+     * 
+     * @return  Array of blocks
+     */
+    public BigInt[] getBlocks()
     {
         BigInt[] blocks = new BigInt[count()];
         
@@ -83,26 +120,50 @@ public class BlockedMessage
         return blocks;
     }
     
-    String getAscii()
+    /**
+     * Get the message decoded as ASCII text
+     * 
+     * @return  decoded ASCII message
+     */
+    public String getAscii()
     {
         return message;
     }
     
     
     
-    private BigInt encodeBlock(String ascii)
+    /**
+     * Encode a small ASCII string as a block
+     * 
+     * @param ascii     ASCII text to encode
+     * @return          ASCII text encoded as block
+     */
+    private static BigInt encodeBlock(String ascii)
     {
         // TODO implement this
         return null;
     }
     
-    private String decodeBlock(BigInt block)
+    /**
+     * Decode a single block back to ASCII format
+     * 
+     * @param block     encoded message block to decode
+     * @return          decoded ASCII text of block
+     */
+    private static String decodeBlock(BigInt block)
     {
         // TODO implement this
         return null;
     }
     
-    private int encodeChar(char c) throws Exception
+    /**
+     * Map a single character to an integer value
+     * 
+     * @param c     Character to encode
+     * @return      Integer representation of character
+     * @throws Exception 
+     */
+    private static int encodeChar(char c) throws Exception
     {
         switch(c)
         {
@@ -212,7 +273,14 @@ public class BlockedMessage
         }
     }
     
-    private char decodeChar(int value) throws Exception
+    /**
+     * Map an integer to a character; inverse function of encodeChar()
+     * 
+     * @param value     integer to map to character
+     * @return          character that the value represents
+     * @throws Exception 
+     */
+    private static char decodeChar(int value) throws Exception
     {
         switch(value)
         {
