@@ -640,6 +640,58 @@ public class BigInt
         return result;
     }
     
+    /**
+     * Converts value stored as BigInt to type int
+     * 
+     * @throws  Exception if value is too large to fit into int
+     * @return  value as int
+     */
+    public int toInt() throws Exception
+    {
+        int result = 0;
+        
+        for(int i = number.size() - 1; i >= 0; --i)
+        {
+            int prev = result;
+            result *= 10;
+            result += number.get(i);
+            
+            // Check for multiplication overflow
+            if(prev != result/10)
+            {
+                throw new Exception("Value too large to fit into int");
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Converts value stored as BigInt to type long
+     * 
+     * @throws  Exception if value is too large to fit into long
+     * @return  value as long
+     */
+    public long toLong() throws Exception
+    {
+        long result = 0;
+        
+        for(int i = number.size() - 1; i >= 0; --i)
+        {
+            long prev = result;
+            result *= 10;
+            result += number.get(i);
+            
+            // Check for multiplication overflow
+            if(prev != result/10)
+            {
+                throw new Exception("Value too large to fit into long");
+            }
+        }
+        
+        return result;
+    }
+    
     
     
     /**

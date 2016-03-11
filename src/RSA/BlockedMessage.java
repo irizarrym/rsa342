@@ -22,6 +22,7 @@ public class BlockedMessage
      * don't align with the block size.
      */
     private String message;
+    private static final BigInt HUNDRED = new BigInt(100);
     
     /**
      * Specifies the size of each block in characters
@@ -31,6 +32,7 @@ public class BlockedMessage
     public BlockedMessage(int blockSize)
     {
         this.blockSize = blockSize;
+        message = "";
     }
     
     public BlockedMessage(String ascii, int blockSize)
@@ -39,10 +41,14 @@ public class BlockedMessage
         message = ascii;
     }
     
-    public BlockedMessage(BigInt[] blocks, int blockSize)
+    public BlockedMessage(BigInt[] blocks, int blockSize) throws Exception
     {
         this(blockSize);
-        // TODO implement this
+        
+        for(BigInt b : blocks)
+        {
+            message += decodeBlock(b);
+        }
     }
     
     
@@ -52,20 +58,26 @@ public class BlockedMessage
      * 
      * @return  number of ASCII characters
      */
-    public int count()
+    public int countAscii()
     {
         return message.length();
     }
     
     /**
-     * Get the number of blocks used to compose the message
+     * Get the minimum number of blocks needed to encode the message
+     * by the block size
      * 
      * @return  number of blocks
      */
     public int countBlocks()
     {
-        // TODO implement this
-        return 0;
+        int result = message.length() / blockSize;
+        if(message.length() % blockSize > 0)
+        {
+            result += 1;
+        }
+        
+        return result;
     }
     
     /**
@@ -83,9 +95,9 @@ public class BlockedMessage
      * 
      * @param block 
      */
-    public void append(BigInt block)
+    public void append(BigInt block) throws Exception
     {
-        // TODO implement this
+        message += decodeBlock(block);
     }
     
     /**
@@ -94,13 +106,19 @@ public class BlockedMessage
      * @param index     0 <= index < countBlocks()
      * @return          Encoded block at index
      */
-    public BigInt getBlock(int index)
+    public BigInt getBlock(int index) throws Exception
     {
-        // TODO implement this
+        if(index < 0 || index >= countBlocks())
+        {
+            throw new IllegalArgumentException("index out of bounds");
+        }
         
-        // asciiToBlock(message.substring(begin, end));
+        int lower = index*blockSize;
+        int upper = blockSize*(index + 1);
+        if(upper > message.length()) upper = message.length();
         
-        return null;
+        String sub = message.substring(lower, upper);
+        return encodeBlock(sub);
     }
     
     /**
@@ -108,9 +126,9 @@ public class BlockedMessage
      * 
      * @return  Array of blocks
      */
-    public BigInt[] getBlocks()
+    public BigInt[] getBlocks() throws Exception
     {
-        BigInt[] blocks = new BigInt[count()];
+        BigInt[] blocks = new BigInt[countBlocks()];
         
         for(int i = 0; i < blocks.length; ++i)
         {
@@ -138,10 +156,20 @@ public class BlockedMessage
      * @param ascii     ASCII text to encode
      * @return          ASCII text encoded as block
      */
-    private static BigInt encodeBlock(String ascii)
+    private static BigInt encodeBlock(String ascii) throws Exception
     {
-        // TODO implement this
-        return null;
+        // "MNO" => 525150
+        
+        String result = "";
+        
+        for(int i = ascii.length() - 1; i >= 0; --i)
+        {
+            String next = "" + encodeChar(ascii.charAt(i));
+            if(next.length() == 1) next = "0" + next;
+            result += next;
+        }
+        
+        return new BigInt(result);
     }
     
     /**
@@ -150,10 +178,20 @@ public class BlockedMessage
      * @param block     encoded message block to decode
      * @return          decoded ASCII text of block
      */
-    private static String decodeBlock(BigInt block)
+    private static String decodeBlock(BigInt block) throws Exception
     {
-        // TODO implement this
-        return null;
+        // 525150 => "MNO"
+        
+        String result = "";
+        
+        while(block.greater(BigInt.ZERO))
+        {
+            long next = block.mod(HUNDRED).toLong();
+            result += decodeChar((int)next);
+            block = block.div(HUNDRED);
+        }
+        
+        return result;
     }
     
     /**
@@ -269,7 +307,7 @@ public class BlockedMessage
             case '~': return 99;
                 
             default: 
-            throw new IllegalArgumentException("No mappting for character" + c);
+            throw new IllegalArgumentException("No mappting for character: " + c);
         }
     }
     

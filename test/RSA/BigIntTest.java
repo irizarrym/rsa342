@@ -410,6 +410,52 @@ public class BigIntTest
     }
     
     @Test
+    public void toIntTest() throws Exception
+    {
+        Random r = new Random();
+        
+        for(int i = 0; i < 100; ++i)
+        {
+            int value = r.nextInt();
+            if(value < 0) value = -value;
+            BigInt b = new BigInt(value);
+            
+            assertEquals(value, b.toInt());
+        }
+    }
+    
+    @Test(expected=Exception.class)
+    public void toIntTestThrows() throws Exception
+    {
+        BigInt b = new BigInt(Integer.MAX_VALUE);
+        b = b.add(BigInt.ONE);
+        b.toInt();
+    }
+    
+    @Test
+    public void toLongTest() throws Exception
+    {
+        Random r = new Random();
+        
+        for(int i = 0; i < 100; ++i)
+        {
+            long value = r.nextLong();
+            if(value < 0) value = -value;
+            BigInt b = new BigInt(value);
+            
+            assertEquals(value, b.toLong());
+        }
+    }
+    
+    @Test(expected=Exception.class)
+    public void toLongTestThrows() throws Exception
+    {
+        BigInt b = new BigInt(Long.MAX_VALUE);
+        b = b.add(BigInt.ONE);
+        b.toLong();
+    }
+    
+    @Test
     public void trimZeroTest()
     {
         BigInt a = new BigInt("0000012345");
