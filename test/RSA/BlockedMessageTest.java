@@ -18,8 +18,6 @@ import static org.junit.Assert.*;
 
 /**
  * Unit tests for class BlockedMessage
- * 
- * @author Michael Irizarry
  */
 public class BlockedMessageTest
 {
