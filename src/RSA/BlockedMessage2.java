@@ -18,20 +18,25 @@ public class BlockedMessage2
     private int blockSize;
     
     /**
-     * 
      * @param blockSize     Number of characters per block
+     * @throws Exception    If blockSize <= 0
      */
-    public BlockedMessage2(int blockSize)
+    public BlockedMessage2(int blockSize) throws Exception
     {
+        if(blockSize <= 0)
+        {
+            throw new Exception("block size must be positive value");
+        }
+        
         this.blockSize = blockSize;
         message = "";
     }
     
     /**
-     * 
      * @param text          Text to initialize message with
      * @param blockSize     Number of characters per block
-     * @throws Exception 
+     * @throws Exception    If text contains invalid characters with
+     *                      undefined mappings or if blockSize <= 0
      */
     public BlockedMessage2(String text, int blockSize) throws Exception
     {
@@ -40,10 +45,10 @@ public class BlockedMessage2
     }
     
     /**
-     * 
      * @param blocks        Encoded blocks to initialize message with
      * @param blockSize     Number of characters per block
-     * @throws Exception 
+     * @throws Exception    If blocks are not properly formatted or
+     *                      if blockSize <= 0
      */
     public BlockedMessage2(String[] blocks, int blockSize) throws Exception
     {
@@ -59,7 +64,8 @@ public class BlockedMessage2
      * Append string to message
      * 
      * @param text          String to append
-     * @throws Exception 
+     * @throws Exception    If text contains invalid character with
+     *                      undefined mappings
      */
     public void appendString(String text) throws Exception
     {
@@ -71,7 +77,7 @@ public class BlockedMessage2
      * Append encoded block to message
      * 
      * @param block         Encoded block to append
-     * @throws Exception 
+     * @throws Exception    If block is not properly formatted
      */
     public void appendBlock(String block) throws Exception
     {
@@ -81,7 +87,7 @@ public class BlockedMessage2
     /**
      * The number of characters in the message
      * 
-     * @return 
+     * @return  Length of message
      */
     public int length()
     {
@@ -110,7 +116,7 @@ public class BlockedMessage2
      * 
      * @param index         The n^th block to retrieve
      * @return              The encoded block at index
-     * @throws Exception 
+     * @throws Exception    If index is out of bounds
      */
     public String getBlock(int index) throws Exception
     {
