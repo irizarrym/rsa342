@@ -24,12 +24,10 @@ public class RSATest
     private final RSAPublicKey pubKey;
     private final RSAPrivateKey prvKey;
     
-    private static final String prime1 = 
-            "5593516160140905380432892506793403468019"
-            + "5691613547283099974297678762995601993";
-    private static final String prime2 = 
-            "1047858154575742555993994021859261043407"
-            + "11134300257018221878155921492470860681";
+    private static final String prime1 =
+            "242091119628427719423661998577941558593";
+    private static final String prime2 =
+            "321535397227569768931565363004715950029";
     
     private static final String text1 =
         "abcdefghijklmnopqrstuvwxyz";
@@ -50,26 +48,34 @@ public class RSATest
     @Test
     public void test01() throws Exception
     {
-        BlockedMessage2 msg = new BlockedMessage2(text1, 30);
-        assertEquals(1, msg.countBlocks());
+        BlockedMessage2 enc = new BlockedMessage2(text1, 30);
+        assertEquals(1, enc.countBlocks());
         
-        BigInt rawValue = new BigInt(msg.getBlock(0));
+        BigInt rawValue = new BigInt(enc.getBlock(0));
         BigInt encValue = pubKey.encrypt(rawValue);
         BigInt decValue = prvKey.decrypt(encValue);
         
         assertTrue(decValue.equals(rawValue));
+        
+        BlockedMessage2 decBlock = new BlockedMessage2(30);
+        decBlock.appendBlock(decValue.toString(60));
+        assertEquals(text1, decBlock.toString());
     }
     
     @Test
     public void test02() throws Exception
     {
-        BlockedMessage2 msg = new BlockedMessage2(text2, 30);
-        assertEquals(1, msg.countBlocks());
+        BlockedMessage2 enc = new BlockedMessage2(text2, 30);
+        assertEquals(1, enc.countBlocks());
         
-        BigInt rawValue = new BigInt(msg.getBlock(0));
+        BigInt rawValue = new BigInt(enc.getBlock(0));
         BigInt encValue = pubKey.encrypt(rawValue);
         BigInt decValue = prvKey.decrypt(encValue);
         
         assertTrue(decValue.equals(rawValue));
+        
+        BlockedMessage2 decBlock = new BlockedMessage2(30);
+        decBlock.appendBlock(decValue.toString(60));
+        assertEquals(text2, decBlock.toString());
     }
 }
