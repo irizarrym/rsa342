@@ -24,8 +24,7 @@ public class RSAPublicKey
     
     public BigInt encrypt(BigInt value)
     {
-        // TODO implement this
-        return null;
+        return value.powMod(e, n);
     }
     
     public BigInt eValue()

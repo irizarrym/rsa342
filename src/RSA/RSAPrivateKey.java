@@ -24,8 +24,7 @@ public class RSAPrivateKey
     
     public BigInt decrypt(BigInt value)
     {
-        // TODO implement this
-        return null;
+        return value.powMod(d, n);
     }
     
     public BigInt dValue()
