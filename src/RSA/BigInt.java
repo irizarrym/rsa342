@@ -323,6 +323,26 @@ public class BigInt
     }
     
     /**
+     * Check if the BigInt is prime
+     * 
+     * @param n		BigInt to be checked
+     * @return      True if n is prime, otherwise false
+     */
+    public static boolean isPrime(BigInt n)
+    {
+    	if (mod(n,TWO).equals(ZERO)) return false;
+    	
+    	
+    	for(BigInt i = new BigInt(3); pow(i,TWO).lessEqual(n); i = i.add(TWO)) 
+    	{
+    		if(mod(n,i).equals(ZERO))
+    			return false;
+    	}
+    	
+    	return true;
+    }
+    
+    /**
      * Computes the result of base^exp
      * 
      * @param base  left operand

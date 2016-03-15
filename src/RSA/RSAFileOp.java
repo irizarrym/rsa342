@@ -112,7 +112,7 @@ public final class RSAFileOp
      * @see http://www.tutorialspoint.com/java_xml/java_dom_create_document.htm
      */
     public static void savePublicKey(String filePath, RSAPublicKey key)
-    throws ParserConfigurationException, TransformerConfigurationException, TransformerException
+    throws ParserConfigurationException, TransformerConfigurationException, TransformerException, IOException
     {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -153,7 +153,7 @@ public final class RSAFileOp
      * @see http://www.tutorialspoint.com/java_xml/java_dom_create_document.htm
      */
     public static void savePrivateKey(String filePath, RSAPrivateKey key)
-    throws ParserConfigurationException, TransformerConfigurationException, TransformerException
+    throws ParserConfigurationException, TransformerConfigurationException, TransformerException, IOException
     {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
